@@ -3,9 +3,11 @@ import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
+    //id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
+    //id("androidx.compose.compiler")
 }
 
 android {
@@ -40,11 +42,14 @@ android {
             )
         }
     }
-    kapt {
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
+    /*kapt {
         arguments {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
-    }
+    }*/
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -56,15 +61,17 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
+
+    sourceSets["main"].java.srcDirs("build/generated/ksp/main/kotlin")
 //    packaging {
 //        resources {
 //            excludes += "/META-INF/{AL2.0,LGPL2.1}"
 //        }
 //    }
 }
-kapt {
+/*kapt {
     correctErrorTypes = true
     useBuildCache = true
     arguments {
@@ -74,7 +81,7 @@ kapt {
     javacOptions {
         option("-XaddExports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED")
     }
-}
+}*/
 
 java {
     toolchain {
@@ -133,7 +140,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.51.1")
     implementation("androidx.test:runner:1.5.2")
     implementation("androidx.hilt:hilt-common:1.2.0")
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    ksp("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Play Services Auth
@@ -149,7 +156,7 @@ dependencies {
     // ExoPlayer
     implementation("com.google.android.exoplayer:exoplayer:2.19.1")
 
-    implementation ("androidx.compose.compiler:compiler:1.5.3")
+    implementation ("androidx.compose.compiler:compiler:1.5.14")
     implementation ("androidx.room:room-runtime:2.6.1")
     implementation ("androidx.room:room-ktx:2.6.1")
     // Testing dependencies
@@ -161,6 +168,6 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation ("com.onesignal:OneSignal:[5.0.0, 5.1.99]")
-    kapt ("androidx.room:room-compiler:2.6.1")
+    ksp ("androidx.room:room-compiler:2.6.1")
 }
 
